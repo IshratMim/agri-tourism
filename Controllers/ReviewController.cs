@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ReviewSystem.Data;
 using ReviewSystem.Models;
@@ -64,7 +64,7 @@ namespace ReviewSystem.Controllers
                 // Redirect to the Index action (same page)
                 return RedirectToAction(nameof(Index));
             }
-
+             
             return View();
         }
 
@@ -87,44 +87,45 @@ namespace ReviewSystem.Controllers
             return View(review);
         }
 
-        // POST: Review/Edit
+        //// POST: Review/Edit
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("ReviewId,UserId,Rating,Comment,CreatedAt")] Review review)
+        { 
         {
-            if (id != review.ReviewId)
-            {
-                return NotFound();
-            }
+            
+            var existingReview = await _context.Reviews.FindAsync(id);
+            
 
-            if (ModelState.IsValid)
+            
+            existingReview.Rating = review.Rating;
+            existingReview.Comment = review.Comment;
+            existingReview.CreatedAt = review.CreatedAt;
+
+            try
             {
-                try
-                {
-                    _context.Update(review);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!ReviewExists(review.ReviewId))
+                // Mark the entity as modified
+                _context.Update(existingReview);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                    if (existingReview == null)
                     {
                         return NotFound();
                     }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+
+                   
             }
+
+            
+            return RedirectToAction(nameof(Index));
+        }
+
             return View(review);
         }
 
-        private bool ReviewExists(int id)
-        {
-            return _context.Reviews.Any(e => e.ReviewId == id);
-        }
-        // GET: Review/Delete/5
+        
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null)
@@ -143,7 +144,7 @@ namespace ReviewSystem.Controllers
             return View(review);
         }
 
-        // POST: Review/Delete/5
+        //// POST: Review/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id)
@@ -159,3 +160,4 @@ namespace ReviewSystem.Controllers
 
     }
 }
+
