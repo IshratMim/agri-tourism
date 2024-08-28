@@ -1,26 +1,64 @@
-﻿@model ReviewSystem.Models.Review
+@model ReviewSystem.Models.Review
 
-<h2>Edit Review</h2>
+@{
+    ViewData["Title"] = "Edit";
+}
 
-<form asp-action="Edit">
-    <div class="form-group">
-        <label>Username</label>
-        <input type="text" class="form-control" value="@Model.User.Username" disabled />
+<h1>Edit</h1>
+
+<h4>Review</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            
+            <!-- Hidden field to store the ReviewId -->
+            <input type="hidden" asp-for="ReviewId" />
+            
+            <div class="form-group">
+                 <label asp-for="UserId" class="control-label"></label>
+                 <input asp-for="UserId" class="form-control"  readonly>
+                 <span asp-validation-for="UserId" class="text-danger"></span>
+                  
+            </div>
+            <div class="form-group">
+                <label asp-for="User.Username" class="control-label"></label>
+                <input asp-for="User.Username" class="form-control" readonly>
+                <span asp-validation-for="User.Username" class="text-danger"></span>
+
+            </div>
+
+            
+
+            
+            
+            <div class="form-group">
+                <label asp-for="Rating" class="control-label"></label>
+                <input asp-for="Rating" class="form-control" />
+                <span asp-validation-for="Rating" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="Comment" class="control-label"></label>
+                <textarea asp-for="Comment" class="form-control"></textarea>
+                <span asp-validation-for="Comment" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <label asp-for="CreatedAt" class="control-label"></label>
+                <input asp-for="CreatedAt" class="form-control" type="datetime-local" />
+                <span asp-validation-for="CreatedAt" class="text-danger"></span>
+            </div>
+            
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn btn-primary" />
+                <a asp-action="Index" class="btn btn-secondary">Back to List</a>
+            </div>
+        </form>
     </div>
-    <div class="form-group">
-        <label>Email</label>
-        <input type="email" class="form-control" value="@Model.User.Email" disabled />
-    </div>
-    <div class="form-group">
-        <label>Rating</label>
-        <input type="number" asp-for="Rating" class="form-control" min="1" max="5" required />
-    </div>
-    <div class="form-group">
-        <label>Comment</label>
-        <textarea asp-for="Comment" class="form-control" required></textarea>
-    </div>
-    <div class="form-group">
-        <input type="submit" value="Save Changes" class="btn btn-primary" />
-    </div>
-    
-</form>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
